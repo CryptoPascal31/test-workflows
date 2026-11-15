@@ -51,7 +51,8 @@ jobs:
 
       - name: Extract Artifact archive
         run: |
-          tar xzf *.tar.gz
+          tar xzf *.tar.gz chainweb/pact-replay
+          rm -rf *.tar.gz
       
       - name: Show binaries
         run: |
