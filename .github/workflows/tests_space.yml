@@ -1,0 +1,60 @@
+
+name: Runner disk space
+
+on:
+  workflow_dispatch:
+
+jobs:
+  disk-space:
+    name: Inspect runner storage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: System information
+        run: |
+          echo "========== SYSTEM =========="
+          uname -a
+          echo ""
+          echo "========== RUNNER =========="
+          echo "OS: $RUNNER_OS"
+          echo "ARCH: $RUNNER_ARCH"
+          echo "TEMP: $RUNNER_TEMP"
+          echo "WORKSPACE: $GITHUB_WORKSPACE"
+
+      - name: Disk space overview
+        run: |
+          echo "========== DF -H =========="
+          df -h
+
+          echo ""
+          echo "========== DF -HT =========="
+          df -hT
+
+      - name: Mount points
+        run: |
+          echo "========== LSBLK =========="
+          lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS
+
+          echo ""
+          echo "========== FINDMNT =========="
+          findmnt
+
+      - name: Inspect /mnt
+        run: |
+          echo "========== /mnt =========="
+          ls -lah /mnt || true
+          echo ""
+          df -h /mnt || true
+          echo ""
+          du -sh /mnt/* 2>/dev/null || true
+
+      - name: Inspect common directories
+        run: |
+          echo "========== DIRECTORY SIZES =========="
+          sudo du -xhd1 / 2>/dev/null | sort -h
+
+      - name: Final disk space
+        if: always()
+        run: |
+          echo "========== FINAL DF -H =========="
+          df -h
