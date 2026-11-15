@@ -63,11 +63,20 @@ jobs:
             ((i++))
           done | xz -d >  pact-v1-chain-${{ matrix.chain }}.sqlite
   
-          ls -alh
+          cd ..
+          sudo compsize sqlite
 
+      - name: Cloning data
+        run: |
+          sudo btrfs subvolume snapshot  /mnt/btrfs/main  /mnt/btrfs/stepA
+          sudo btrfs subvolume snapshot  /mnt/btrfs/main  /mnt/btrfs/stepB
+          sudo btrfs subvolume snapshot  /mnt/btrfs/main  /mnt/btrfs/stepC
+          sudo btrfs subvolume snapshot  /mnt/btrfs/main  /mnt/btrfs/stepD
 
       - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[0].stop }}
         run: |
-          echo "Hello"
+          cd /mnt/btrfs/stepA
+          ls -alh .
+          ls -alh sqlite
           
           
