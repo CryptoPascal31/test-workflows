@@ -4,25 +4,24 @@ on:
   workflow_dispatch:
 
 jobs:
-  strategy:
-  matrix:
-    chain: ["1","2","3"]
-    range:
-      -
-        - start: 5500000
-          stop: 6000000
-        - start: 5000000
-          stop: 5500000
-
-      -
-        - start: 4500000
-          stop: 5000000
-        - start: 4000000
-          stop: 4500000
-
       
   btrfs:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        chain: ["1","2","3"]
+        range:
+          -
+            - start: 5500000
+              stop: 6000000
+            - start: 5000000
+              stop: 5500000
+
+          -
+            - start: 4500000
+              stop: 5000000
+            - start: 4000000
+              stop: 4500000
 
     steps:
       - name: Create Btrfs loop device
