@@ -29,6 +29,19 @@ jobs:
     name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[1].stop }}
 
     steps:
+      - name: Download Build artifact
+        uses: dawidd6/action-download-artifact
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          workflow: workflow_name.yml
+          ref: evm/fix_fornumbers_spv_lookups
+          repo: kda-community/chainweb-node
+          name: chainweb-applications.false.9.12.2.ubuntu-24.04 
+      
+      - name: Ls
+        run: |
+          ls -alh
+    
       - name: Create Btrfs loop device
         run: |
           sudo apt-get update
