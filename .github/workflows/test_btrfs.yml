@@ -17,15 +17,23 @@ jobs:
         range:
           -
             - start: 5000000
-              stop: 5500000
+              stop:  5250000
+            - start: 5250000
+              stop:  5500000
             - start: 5500000
-              stop: 6000000
+              stop:  5750000
+            - start: 5750000
+              stop:  6000000
 
           -
-            - start: 4500000
-              stop: 5000000
             - start: 4000000
-              stop: 4500000
+              stop:  4250000
+            - start: 4250000
+              stop:  4500000
+            - start: 4500000
+              stop:  4750000
+            - start: 4750000
+              stop:  5000000
               
     name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[1].stop }}
 
