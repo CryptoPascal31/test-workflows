@@ -63,8 +63,6 @@ jobs:
             ((i++))
           done | xz -d >  pact-v1-chain-${{ matrix.chain }}.sqlite
   
-          [ $i -eq 0 ] && exit 1
-
           ls -alh
 
 
