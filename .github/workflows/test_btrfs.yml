@@ -51,7 +51,7 @@ jobs:
           chattr -c /mnt/btrfs/main/0/sqlite
 
       - name: Replay Chain {{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[0].stop }}
-      - run: |
+        run: |
           echo "Hello"
           
           
