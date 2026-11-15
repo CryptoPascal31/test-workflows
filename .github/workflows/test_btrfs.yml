@@ -3,6 +3,9 @@ name: Runner Btrfs
 on:
   workflow_dispatch:
 
+env:
+  SQLITE_DOWNLOAD_URL: https://github.com/kda-community/pact-db-snapshot/releases/download/dbdump-2026-08-09
+
 jobs:
       
   btrfs:
@@ -12,10 +15,10 @@ jobs:
         chain: ["1","2","3"]
         range:
           -
-            - start: 5500000
-              stop: 6000000
             - start: 5000000
               stop: 5500000
+            - start: 5500000
+              stop: 6000000
 
           -
             - start: 4500000
@@ -50,6 +53,20 @@ jobs:
           mkdir -p  /mnt/btrfs/main/0/sqlite
           mkdir -p  /mnt/btrfs/main/0/rocksDb
           chattr -c /mnt/btrfs/main/0/sqlite
+
+      - name: Download Pact DB Chain ${{ matrix.chain }}
+        run: |
+          cd /mnt/btrfs/main/0/sqlite
+          i=0
+
+          while curl -sSLf "${SQLITE_DOWNLOAD_URL}/pact-v1-chain-${{ matrix.chain }}.sqlite.xz.part-$(printf "%02d" $i)"; do
+            ((i++))
+          done | xz -d >  pact-v1-chain-${{ matrix.chain }}.sqlite
+  
+          [ $i -eq 0 ] && exit 1
+
+          ls -alh
+
 
       - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[0].stop }}
         run: |
