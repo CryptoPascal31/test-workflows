@@ -1,0 +1,30 @@
+name: Runner Btrfs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  btrfs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create Btrfs loop device
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y btrfs-progs
+
+          sudo truncate -s 80G /btrfs.img
+          LOOP=$(sudo losetup --find --show /btrfs.img)
+
+          sudo mkfs.btrfs -f "$LOOP"
+          sudo mkdir -p /mnt/btrfs
+          sudo mount -o compress=zstd:3 "$LOOP" /mnt/btrfs
+
+          df -h /mnt/btrfs
+          sudo btrfs filesystem usage /mnt/btrfs
+
+      - name: Test
+        run: |
+          dd if=/dev/zero of=/mnt/btrfs/testfile bs=1M count=1024
+          df -h /mnt/btrfs
+          sudo btrfs filesystem usage /mnt/btrfs
