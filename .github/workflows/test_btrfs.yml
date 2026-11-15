@@ -44,9 +44,9 @@ jobs:
         run: |
           tar xzf *.tar.gz
       
-      - name: Ls
+      - name: Show binaries
         run: |
-          ls -alh
+          ls -alh chainweb
     
       - name: Create Btrfs loop device
         run: |
