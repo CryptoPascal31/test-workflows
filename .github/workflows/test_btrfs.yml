@@ -28,8 +28,8 @@ jobs:
           sudo btrfs subvolume create /mnt/btrfs/main
           sudo chown "$(id -u):$(id -g)" /mnt/btrfs/main
 
-          mkdir-p  /mnt/btrfs/main/0
-          mkdir-p  /mnt/btrfs/main/0/sqlite
-          mkdir-p  /mnt/btrfs/main/0/rocksDb
+          mkdir -p  /mnt/btrfs/main/0
+          mkdir -p  /mnt/btrfs/main/0/sqlite
+          mkdir -p  /mnt/btrfs/main/0/rocksDb
 
           chattr -c /mnt/btrfs/main/0/sqlite
