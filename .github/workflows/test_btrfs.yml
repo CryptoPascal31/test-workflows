@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Download Build artifact
-        uses: dawidd6/action-download-artifact
+        uses: dawidd6/action-download-artifact@v28
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
           workflow: workflow_name.yml
