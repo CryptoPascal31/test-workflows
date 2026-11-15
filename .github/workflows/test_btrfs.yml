@@ -81,18 +81,19 @@ jobs:
           mkdir -p  /mnt/btrfs/main/0/sqlite
           mkdir -p  /mnt/btrfs/main/0/rocksDb
           chattr -c /mnt/btrfs/main/0/sqlite
+      
+      - parallel:
+        - name: Download Pact DB Chain ${{ matrix.chain }}
+          run: |
+            cd /mnt/btrfs/main/0/sqlite
+            i=0
 
-      - name: Download Pact DB Chain ${{ matrix.chain }}
-        run: |
-          cd /mnt/btrfs/main/0/sqlite
-          i=0
-
-          while curl -sSLf "${SQLITE_DOWNLOAD_URL}/pact-v1-chain-${{ matrix.chain }}.sqlite.xz.part-$(printf "%02d" $i)"; do
-            ((i++))
-          done | xz -d >  pact-v1-chain-${{ matrix.chain }}.sqlite
+            while curl -sSLf "${SQLITE_DOWNLOAD_URL}/pact-v1-chain-${{ matrix.chain }}.sqlite.xz.part-$(printf "%02d" $i)"; do
+              ((i++))
+            done | xz -d >  pact-v1-chain-${{ matrix.chain }}.sqlite
   
-          cd ..
-          sudo compsize sqlite
+            cd ..
+            sudo compsize sqlite
 
       - name: Cloning data
         run: |
@@ -101,27 +102,30 @@ jobs:
           sudo btrfs subvolume snapshot  /mnt/btrfs/main  /mnt/btrfs/stepC
           sudo btrfs subvolume snapshot  /mnt/btrfs/main  /mnt/btrfs/stepD
 
-      - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[0].stop }}
-        background: true 
-        run: |
-          cd /mnt/btrfs/stepA
-          ls -alh .
 
-      - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[1].start }} - ${{ matrix.range[1].stop }}
-        background: true 
-        run: |
-          cd /mnt/btrfs/stepB
-          ls -alh .
+      - parallel:
+        - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[0].stop }}
+          run: |
+            cd /mnt/btrfs/stepA
+            ls -alh .
+
+        - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[1].start }} - ${{ matrix.range[1].stop }}
+          run: |
+            cd /mnt/btrfs/stepB
+            ls -alh .
       
-      - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[2].start }} - ${{ matrix.range[2].stop }}
-        background: true 
-        run: |
-          cd /mnt/btrfs/stepC
-          ls -alh .
+        - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[2].start }} - ${{ matrix.range[2].stop }}
+          run: |
+            cd /mnt/btrfs/stepC
+            ls -alh .
 
-      - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[3].start }} - ${{ matrix.range[3].stop }}
+        - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[3].start }} - ${{ matrix.range[3].stop }}
+          run: |
+            cd /mnt/btrfs/stepD
+            ls -alh .
+          
+      - name: Compile logs
         run: |
-          cd /mnt/btrfs/stepD
-          ls -alh .
+          echo "Ended"
           
           
