@@ -33,7 +33,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v28
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
-          workflow: workflow_name.yml
+          workflow: applications.yml
           ref: evm/fix_fornumbers_spv_lookups
           repo: kda-community/chainweb-node
           name: chainweb-applications.false.9.12.2.ubuntu-24.04 
