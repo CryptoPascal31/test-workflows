@@ -39,6 +39,10 @@ jobs:
           name: chainweb-applications.false.9.12.2.ubuntu-24.04
           workflow_conclusion: completed
           allow_forks: true
+
+      - name: Extract Artifact archive
+        run: |
+          tar xzf *.tar.gz
       
       - name: Ls
         run: |
