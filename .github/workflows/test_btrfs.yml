@@ -4,6 +4,23 @@ on:
   workflow_dispatch:
 
 jobs:
+  strategy:
+  matrix:
+    chain: ["1","2","3"]
+    range:
+      -
+        - start: 5500000
+          stop: 6000000
+        - start: 5000000
+          stop: 5500000
+
+      -
+        - start: 4500000
+          stop: 5000000
+        - start: 4000000
+          stop: 4500000
+
+      
   btrfs:
     runs-on: ubuntu-latest
 
@@ -31,5 +48,10 @@ jobs:
           mkdir -p  /mnt/btrfs/main/0
           mkdir -p  /mnt/btrfs/main/0/sqlite
           mkdir -p  /mnt/btrfs/main/0/rocksDb
-
           chattr -c /mnt/btrfs/main/0/sqlite
+
+      - name: Replay Chain {{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[0].stop }}
+      - run: |
+          echo "Hello"
+          
+          
