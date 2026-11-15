@@ -32,7 +32,7 @@ jobs:
       - name: Create Btrfs loop device
         run: |
           sudo apt-get update
-          sudo apt-get install -y btrfs-progs
+          sudo apt-get install -y btrfs-progs btrfs-compsize
 
           sudo truncate -s 80G /btrfs.img
           LOOP=$(sudo losetup --find --show /btrfs.img)
