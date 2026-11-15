@@ -11,6 +11,7 @@ jobs:
   btrfs:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast : false
       matrix:
         chain: ["1","2","3"]
         range:
@@ -93,9 +94,26 @@ jobs:
           sudo btrfs subvolume snapshot  /mnt/btrfs/main  /mnt/btrfs/stepD
 
       - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[0].stop }}
+        background: true 
         run: |
           cd /mnt/btrfs/stepA
           ls -alh .
-          ls -alh sqlite
+
+      - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[1].start }} - ${{ matrix.range[1].stop }}
+        background: true 
+        run: |
+          cd /mnt/btrfs/stepB
+          ls -alh .
+      
+      - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[2].start }} - ${{ matrix.range[2].stop }}
+        background: true 
+        run: |
+          cd /mnt/btrfs/stepC
+          ls -alh .
+
+      - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[3].start }} - ${{ matrix.range[3].stop }}
+        run: |
+          cd /mnt/btrfs/stepD
+          ls -alh .
           
           
