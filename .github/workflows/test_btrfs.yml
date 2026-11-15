@@ -37,6 +37,7 @@ jobs:
           ref: evm/fix_fornumbers_spv_lookups
           repo: kda-community/chainweb-node
           name: chainweb-applications.false.9.12.2.ubuntu-24.04
+          workflow_conclusion: completed
           allow_forks: true
       
       - name: Ls
