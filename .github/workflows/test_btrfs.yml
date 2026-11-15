@@ -22,6 +22,8 @@ jobs:
               stop: 5000000
             - start: 4000000
               stop: 4500000
+              
+    name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[1].stop }}
 
     steps:
       - name: Create Btrfs loop device
@@ -49,7 +51,7 @@ jobs:
           mkdir -p  /mnt/btrfs/main/0/rocksDb
           chattr -c /mnt/btrfs/main/0/sqlite
 
-      - name: Replay Chain {{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[0].stop }}
+      - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[0].stop }}
         run: |
           echo "Hello"
           
