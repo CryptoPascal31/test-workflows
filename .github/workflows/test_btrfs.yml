@@ -23,8 +23,13 @@ jobs:
           df -h /mnt/btrfs
           sudo btrfs filesystem usage /mnt/btrfs
 
-      - name: Test
+      - name: Create main Subvolme
         run: |
-          dd if=/dev/zero of=/mnt/btrfs/testfile bs=1M count=1024
-          df -h /mnt/btrfs
-          sudo btrfs filesystem usage /mnt/btrfs
+          sudo btrfs subvolume create /mnt/btrfs/main
+          sudo chown "$(id -u):$(id -g)" /mnt/btrfs/main
+
+          mkdir-p  /mnt/btrfs/main/0
+          mkdir-p  /mnt/btrfs/main/0/sqlite
+          mkdir-p  /mnt/btrfs/main/0/rocksDb
+
+          chattr -c /mnt/btrfs/main/0/sqlite
