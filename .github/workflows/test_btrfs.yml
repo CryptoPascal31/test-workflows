@@ -97,6 +97,11 @@ jobs:
     name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[1].stop }}
 
     steps:
+      - name: Install Ubuntu Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y btrfs-progs btrfs-compsize libgflags liblz4 libzstd libsnappy libbz2 libmpfr
+    
       - name: Download Build artifact
         uses: dawidd6/action-download-artifact@v28
         with:
@@ -118,10 +123,7 @@ jobs:
           ls -alh chainweb
     
       - name: Create Btrfs loop device
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y btrfs-progs btrfs-compsize
-
+        run: 
           sudo truncate -s 80G /btrfs.img
           LOOP=$(sudo losetup --find --show /btrfs.img)
 
@@ -164,7 +166,7 @@ jobs:
               ((i+=1))
              done | tar -xJf -
              cd ..
-              sudo compsize rocksDb
+             sudo compsize rocksDb
              
              
 
