@@ -100,7 +100,7 @@ jobs:
       - name: Install Ubuntu Packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y btrfs-progs btrfs-compsize libgflags liblz4 libzstd libsnappy libbz2 libmpfr
+          sudo apt-get install -y btrfs-progs btrfs-compsize gflags lz4 zstd snappy mpfr
     
       - name: Download Build artifact
         uses: dawidd6/action-download-artifact@v28
