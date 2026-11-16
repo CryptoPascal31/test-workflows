@@ -148,7 +148,7 @@ jobs:
             cd /mnt/btrfs/main/0/sqlite
             i=0
 
-            while curl -retry 5 --retry-all-errors -sSLf "${SQLITE_DOWNLOAD_URL}/pact-v1-chain-${{ matrix.chain }}.sqlite.xz.part-$(printf "%02d" $i)"; do
+            while curl  -sSLf "${SQLITE_DOWNLOAD_URL}/pact-v1-chain-${{ matrix.chain }}.sqlite.xz.part-$(printf "%02d" $i)"; do
               ((i++))
             done | xz -d >  pact-v1-chain-${{ matrix.chain }}.sqlite
   
@@ -160,7 +160,7 @@ jobs:
              cd /mnt/btrfs/main/0/rocksDb
              i=0
 
-             while curl -sSLf "${ROCKS_DB_DOWNLAD_URL}/rocksDb-chain-${{ matrix.chain }}.xz.part-$(printf "%02d" $i)"; do
+             while curl -retry 5 --retry-all-errors -sSLf "${ROCKS_DB_DOWNLAD_URL}/rocksDb-chain-${{ matrix.chain }}.xz.part-$(printf "%02d" $i)"; do
               ((i++))
              done | tar xJf -
              cd ..
