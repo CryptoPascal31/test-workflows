@@ -123,7 +123,7 @@ jobs:
           ls -alh chainweb
     
       - name: Create Btrfs loop device
-        run: 
+        run: |
           sudo truncate -s 80G /btrfs.img
           LOOP=$(sudo losetup --find --show /btrfs.img)
 
