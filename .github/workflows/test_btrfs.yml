@@ -13,7 +13,8 @@ on:
       
 env:
   SQLITE_DOWNLOAD_URL: https://github.com/kda-community/pact-db-snapshot/releases/download/${{ github.event.inputs.sqliteSnapshot}}
-
+  ROCKS_DB_DOWNLAD_URL: https://github.com/${{ github.repository }}/releases/download/first_release
+  
 jobs:
       
   btrfs:
@@ -153,6 +154,19 @@ jobs:
   
             cd ..
             sudo compsize sqlite
+            
+        - name: Download RocksDb for Chain ${{ matrix.chain }}
+          run: |
+             cd /mnt/btrfs/main/0/rocksDb
+             i=0
+
+             while curl -sSLf "${ROCKS_DB_DOWNLAD_URL}/rocksDb-chain-${{ matrix.chain }}.xz.part-$(printf "%02d" $i)"; do
+              ((i++))
+             done | tar xJf -
+             cd ..
+              sudo compsize rocksDb
+             
+             
 
       - name: Cloning data
         run: |
@@ -165,9 +179,10 @@ jobs:
       - parallel:
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[0].stop }}
           run: |
-            cd /mnt/btrfs/stepA
-            ls -alh .
-
+            ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepA \ 
+            --start ${{ matrix.range[0].start }} --end  ${{ matrix.range[0].stop }}  \
+            --chains '[${{ matrix.chain }}]' --log-level info | tee log_${{ matrix.range[0].start }}_${{ matrix.range[0].stop }}.txt
+            
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[1].start }} - ${{ matrix.range[1].stop }}
           run: |
             cd /mnt/btrfs/stepB
