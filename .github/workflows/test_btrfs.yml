@@ -183,7 +183,7 @@ jobs:
           run: |
             ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepA \
             --start ${{ matrix.range[0].start }} --end  ${{ matrix.range[0].stop }}  \
-            --chains '[${{ matrix.chain }}]' --log-level info | tee log_${{ matrix.range[0].start }}_${{ matrix.range[0].stop }}.txt
+            --chains '[${{ matrix.chain }}]' --log-level info | grep -v "Entry missing for blockHeight" | grep -v "Discarded" | tee log_${{ matrix.range[0].start }}_${{ matrix.range[0].stop }}.txt
             
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[1].start }} - ${{ matrix.range[1].stop }}
           run: |
