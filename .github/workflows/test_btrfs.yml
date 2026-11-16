@@ -160,7 +160,7 @@ jobs:
              cd /mnt/btrfs/main/0/rocksDb
              i=0
 
-             while curl-sSLf "${ROCKS_DB_DOWNLAD_URL}/rocksDb-chain-${{ matrix.chain }}.xz.part-$(printf "%02d" $i)"; do
+             while curl -sSLf "${ROCKS_DB_DOWNLAD_URL}/rocksDb-chain-${{ matrix.chain }}.xz.part-$(printf "%02d" $i)"; do
               ((i++))
              done | sha256sum
              cd ..
