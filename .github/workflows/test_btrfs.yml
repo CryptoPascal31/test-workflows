@@ -149,7 +149,7 @@ jobs:
             i=0
 
             while curl  -sSLf "${SQLITE_DOWNLOAD_URL}/pact-v1-chain-${{ matrix.chain }}.sqlite.xz.part-$(printf "%02d" $i)"; do
-              ((i++))
+              ((i+=1))
             done | xz -d >  pact-v1-chain-${{ matrix.chain }}.sqlite
   
             cd ..
@@ -161,8 +161,8 @@ jobs:
              i=0
 
              while curl -sSLf "${ROCKS_DB_DOWNLAD_URL}/rocksDb-chain-${{ matrix.chain }}.xz.part-$(printf "%02d" $i)"; do
-              ((i++))
-             done | sha256sum
+              ((i+=1))
+             done | tar -xJf -
              cd ..
               sudo compsize rocksDb
              
