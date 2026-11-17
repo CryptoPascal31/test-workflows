@@ -150,13 +150,32 @@ jobs:
       - parallel:
         - name: Download Pact DB Chain ${{ matrix.chain }}
           run: |
+            set -Eeuo pipefail
+          
             cd /mnt/btrfs/main/0/sqlite
+            tmp=$(mktemp /mnt/btrfs/tmp/tmp.XXXXXX)
+            trap 'rm -f "$tmp"' EXIT
             i=0
+            while true; do
+              part=$(printf "%02d" "$i")
+              url="${SQLITE_DOWNLOAD_URL}/pact-v1-chain-${{ matrix.chain }}.sqlite.xz.part-${part}"
 
-            while curl  -sSLf "${SQLITE_DOWNLOAD_URL}/pact-v1-chain-${{ matrix.chain }}.sqlite.xz.part-$(printf "%02d" $i)"; do
-              ((i+=1))
+              echo "Downloading part ${part}..." >&2
+              if curl -fsSL --retry 5 --retry-all-errors --retry-delay 2 -o "$tmp" "$url"; then
+                cat "$tmp"
+                ((i+=1))
+              else
+                status=$(curl -sSL -o /dev/null -w '%{http_code}' "$url" || true)
+                if [[ "$status" == "404" ]]; then
+                  echo "All $i parts downloaded." >&2
+                  break
+                fi
+
+                echo "Download failed: $url (HTTP $status)" >&2
+                exit 1
+              fi
             done | xz -d >  pact-v1-chain-${{ matrix.chain }}.sqlite
-  
+            
             cd ..
             sudo compsize sqlite
             
