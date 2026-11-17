@@ -167,8 +167,14 @@ jobs:
              done | tar -xJf -
              cd ..
              sudo compsize rocksDb
-             
-             
+
+# This step would be rmeoved once we have a migrated Sqlite snapshot
+      - name: Migrate Database
+        run : |
+          ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepA \
+          --start 7000000 --end  7000000  \
+          --chains '[${{ matrix.chain }}]' --log-level info | grep -v "Entry missing for blockHeight" | grep -v "discarded'
+          
 
       - name: Cloning data
         run: |
@@ -184,30 +190,30 @@ jobs:
             set -o pipefail
             ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepA \
             --start ${{ matrix.range[0].start }} --end  ${{ matrix.range[0].stop }}  \
-            --chains '[${{ matrix.chain }}]' --log-level info | grep -v "Entry missing for blockHeight" | grep -v "discarded" | tee log_${{ matrix.range[0].start }}_${{ matrix.range[0].stop }}.txt
+            --chains '[${{ matrix.chain }}]' --log-level info | tee log_${{ matrix.range[0].start }}_${{ matrix.range[0].stop }}.txt
             
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[1].start }} - ${{ matrix.range[1].stop }}
           run: |
             set -o pipefail
-            ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepA \
+            ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepB \
             --start ${{ matrix.range[1].start }} --end  ${{ matrix.range[1].stop }}  \
-            --chains '[${{ matrix.chain }}]' --log-level info | grep -v "Entry missing for blockHeight" | grep -v "discarded" | tee log_${{ matrix.range[1].start }}_${{ matrix.range[1].stop }}.txt
+            --chains '[${{ matrix.chain }}]' --log-level info | tee log_${{ matrix.range[1].start }}_${{ matrix.range[1].stop }}.txt
 
       
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[2].start }} - ${{ matrix.range[2].stop }}
           run: |
             set -o pipefail
-            ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepA \
+            ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepC \
             --start ${{ matrix.range[2].start }} --end  ${{ matrix.range[2].stop }}  \
-            --chains '[${{ matrix.chain }}]' --log-level info | grep -v "Entry missing for blockHeight" | grep -v "discarded" | tee log_${{ matrix.range[2].start }}_${{ matrix.range[2].stop }}.txt
+            --chains '[${{ matrix.chain }}]' --log-level info | tee log_${{ matrix.range[2].start }}_${{ matrix.range[2].stop }}.txt
 
       
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[3].start }} - ${{ matrix.range[3].stop }}
           run: |
             set -o pipefail
-            ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepA \
+            ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepD \
             --start ${{ matrix.range[3].start }} --end  ${{ matrix.range[3].stop }}  \
-            --chains '[${{ matrix.chain }}]' --log-level info | grep -v "Entry missing for blockHeight" | grep -v "discarded" | tee log_${{ matrix.range[3].start }}_${{ matrix.range[3].stop }}.txt
+            --chains '[${{ matrix.chain }}]' --log-level info | tee log_${{ matrix.range[3].start }}_${{ matrix.range[3].stop }}.txt
 
       
           
