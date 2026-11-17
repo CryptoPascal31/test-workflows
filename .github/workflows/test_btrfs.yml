@@ -208,39 +208,62 @@ jobs:
 
       - parallel:
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[0].stop }}
+          env:
+            START: ${{ matrix.range[0].start }}
+            STOP: ${{ matrix.range[0].stop }}
+            CHAIN: ${{ matrix.chain }}]
+            DB_DIR: /mnt/btrfs/stepA
+          continue-on-error: true
           run: |
-            set -o pipefail
-            ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepA \
-            --start ${{ matrix.range[0].start }} --end  ${{ matrix.range[0].stop }}  \
-            --chains '[${{ matrix.chain }}]' --log-level info | tee log_${{ matrix.range[0].start }}_${{ matrix.range[0].stop }}.txt
+            set -o pipefail            
+            LOG_FILE=log_$CHAIN_$START_$STOP.txt
+            ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" > $LOG_FILE
+
             
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[1].start }} - ${{ matrix.range[1].stop }}
+          env:
+            START: ${{ matrix.range[1].start }}
+            STOP: ${{ matrix.range[1].stop }}
+            CHAIN: ${{ matrix.chain }}]
+            DB_DIR: /mnt/btrfs/stepB          
+          continue-on-error: true
           run: |
-            set -o pipefail
-            ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepB \
-            --start ${{ matrix.range[1].start }} --end  ${{ matrix.range[1].stop }}  \
-            --chains '[${{ matrix.chain }}]' --log-level info | tee log_${{ matrix.range[1].start }}_${{ matrix.range[1].stop }}.txt
+            set -o pipefail            
+            LOG_FILE=log_$CHAIN_$START_$STOP.txt
+            ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" > $LOG_FILE
 
       
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[2].start }} - ${{ matrix.range[2].stop }}
+          env:
+            START: ${{ matrix.range[2].start }}
+            STOP: ${{ matrix.range[2].stop }}
+            CHAIN: ${{ matrix.chain }}]
+            DB_DIR: /mnt/btrfs/stepC          
+          continue-on-error: true
           run: |
-            set -o pipefail
-            ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepC \
-            --start ${{ matrix.range[2].start }} --end  ${{ matrix.range[2].stop }}  \
-            --chains '[${{ matrix.chain }}]' --log-level info | tee log_${{ matrix.range[2].start }}_${{ matrix.range[2].stop }}.txt
+            set -o pipefail            
+            LOG_FILE=log_$CHAIN_$START_$STOP.txt
+            ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" > $LOG_FILE
 
       
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[3].start }} - ${{ matrix.range[3].stop }}
+          env:
+            START: ${{ matrix.range[3].start }}
+            STOP: ${{ matrix.range[3].stop }}
+            CHAIN: ${{ matrix.chain }}]
+            DB_DIR: /mnt/btrfs/stepD               
+          continue-on-error: true
           run: |
-            set -o pipefail
-            ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepD \
-            --start ${{ matrix.range[3].start }} --end  ${{ matrix.range[3].stop }}  \
-            --chains '[${{ matrix.chain }}]' --log-level info | tee log_${{ matrix.range[3].start }}_${{ matrix.range[3].stop }}.txt
+            set -o pipefail            
+            LOG_FILE=log_$CHAIN_$START_$STOP.txt
+            ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" > $LOG_FILE
 
       
           
       - name: Compile logs
         run: |
-          echo "Ended"
+          mkdir -p output_logs
+          cp *.txt output_logs
+          
           
           
