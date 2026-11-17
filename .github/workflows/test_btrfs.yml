@@ -211,7 +211,7 @@ jobs:
           env:
             START: ${{ matrix.range[0].start }}
             STOP: ${{ matrix.range[0].stop }}
-            CHAIN: ${{ matrix.chain }}]
+            CHAIN: ${{ matrix.chain }}
             DB_DIR: /mnt/btrfs/stepA
           continue-on-error: true
           run: |
@@ -224,7 +224,7 @@ jobs:
           env:
             START: ${{ matrix.range[1].start }}
             STOP: ${{ matrix.range[1].stop }}
-            CHAIN: ${{ matrix.chain }}]
+            CHAIN: ${{ matrix.chain }}
             DB_DIR: /mnt/btrfs/stepB          
           continue-on-error: true
           run: |
@@ -237,7 +237,7 @@ jobs:
           env:
             START: ${{ matrix.range[2].start }}
             STOP: ${{ matrix.range[2].stop }}
-            CHAIN: ${{ matrix.chain }}]
+            CHAIN: ${{ matrix.chain }}
             DB_DIR: /mnt/btrfs/stepC          
           continue-on-error: true
           run: |
@@ -250,7 +250,7 @@ jobs:
           env:
             START: ${{ matrix.range[3].start }}
             STOP: ${{ matrix.range[3].stop }}
-            CHAIN: ${{ matrix.chain }}]
+            CHAIN: ${{ matrix.chain }}
             DB_DIR: /mnt/btrfs/stepD               
           continue-on-error: true
           run: |
