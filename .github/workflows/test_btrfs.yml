@@ -143,7 +143,7 @@ jobs:
           mkdir -p  /mnt/btrfs/main/0/rocksDb
           chattr -c /mnt/btrfs/main/0/sqlite
 
-          sudp mkdir -p /mnt/btrfs/tmp
+          sudo mkdir -p /mnt/btrfs/tmp
           sudo chown "$(id -u):$(id -g)" /mnt/btrfs/tmp
           chattr +m /mnt/btrfs/tmp
       
