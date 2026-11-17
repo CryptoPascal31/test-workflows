@@ -17,7 +17,7 @@ env:
   
 jobs:
       
-  btrfs:
+  replay:
     runs-on: ubuntu-latest
     strategy:
       fail-fast : false
@@ -285,4 +285,24 @@ jobs:
           name: replay_chain_${{ matrix.chain }}_${{ matrix.range[0].start }}_${{ matrix.range[3].stop }}
           path: output_logs
 
+
+  compile_logs:
+    runs-on: ubuntu-latest
+    needs: replay
+    if: always()
+
+    steps:
+      - name: Prepare directory
+        run: mkdir -p logs_dir
+    
+      - name: Download artifacts
+        uses: actions/download-artifact@v8
+        with: 
+          path: logs_dir
+          merge-multiple: true
+      
+      - name: Display structure of downloaded files
+        run: ls -R
+      
+    
           
