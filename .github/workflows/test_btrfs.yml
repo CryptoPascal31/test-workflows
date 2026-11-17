@@ -232,7 +232,6 @@ jobs:
             STOP: ${{ matrix.range[0].stop }}
             CHAIN: ${{ matrix.chain }}
             DB_DIR: /mnt/btrfs/stepA
-          continue-on-error: true
           run: |
             set -o pipefail            
             LOG_FILE=log_$CHAIN_$START_$STOP.txt
@@ -245,7 +244,6 @@ jobs:
             STOP: ${{ matrix.range[1].stop }}
             CHAIN: ${{ matrix.chain }}
             DB_DIR: /mnt/btrfs/stepB          
-          continue-on-error: true
           run: |
             set -o pipefail            
             LOG_FILE=log_$CHAIN_$START_$STOP.txt
@@ -258,7 +256,6 @@ jobs:
             STOP: ${{ matrix.range[2].stop }}
             CHAIN: ${{ matrix.chain }}
             DB_DIR: /mnt/btrfs/stepC          
-          continue-on-error: true
           run: |
             set -o pipefail            
             LOG_FILE=log_$CHAIN_$START_$STOP.txt
@@ -271,7 +268,6 @@ jobs:
             STOP: ${{ matrix.range[3].stop }}
             CHAIN: ${{ matrix.chain }}
             DB_DIR: /mnt/btrfs/stepD               
-          continue-on-error: true
           run: |
             set -o pipefail            
             LOG_FILE=log_$CHAIN_$START_$STOP.txt
