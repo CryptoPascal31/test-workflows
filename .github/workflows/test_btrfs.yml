@@ -280,6 +280,7 @@ jobs:
           cp -f *.txt output_logs
                 
       - name: Upload Logs to Artifact
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: replay_chain_${{ matrix.chain }}_${{ matrix.range[0].start }}_${{ matrix.range[3].stop }}
@@ -303,6 +304,13 @@ jobs:
       
       - name: Display structure of downloaded files
         run: ls -R
+
+      - name: Upload Logs to Artifact
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: replay_logs
+          path: logs_dir
       
     
           
