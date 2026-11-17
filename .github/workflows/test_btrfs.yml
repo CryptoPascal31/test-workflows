@@ -172,8 +172,8 @@ jobs:
               part=$(printf "%02d" "$i")
               url="${ROCKS_DB_DOWNLAD_URL}/rocksDb-chain-${{ matrix.chain }}.xz.part-${part}"
 
-              echo "Downloading part ${part}..."
-              if curl -fSL --retry 5 --retry-all-errors --retry-delay 2 -o "$tmp" "$url"; then
+              echo "Downloading part ${part}..." >&2
+              if curl -fsSL --retry 5 --retry-all-errors --retry-delay 2 -o "$tmp" "$url"; then
                 cat "$tmp"
                 ((i+=1))
               else
