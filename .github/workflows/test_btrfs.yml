@@ -258,12 +258,16 @@ jobs:
             LOG_FILE=log_$CHAIN_$START_$STOP.txt
             ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" > $LOG_FILE
 
-      
-          
       - name: Compile logs
+        if: always()
         run: |
           mkdir -p output_logs
-          cp *.txt output_logs
-          
-          
+          cp -f *.txt output_logs
+                
+      - name: Upload Logs to Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: replay_chain_${{ matrix.chain }}_${{ matrix.range[0].start }}_${{ matrix.range[3].stop }}
+          path: output_logs
+
           
