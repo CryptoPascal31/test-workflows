@@ -32,7 +32,7 @@ jobs:
             - start: 6500000
               stop:  6750000
             - start: 6750000
-              stop:  7000000
+              stop:  7100000
               
           -    
             - start: 5000000
@@ -94,7 +94,7 @@ jobs:
             - start: 750000
               stop:  1000000
               
-    name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[1].stop }}
+    name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[3].stop }}
 
     steps:
       - name: Install Ubuntu Packages
@@ -181,24 +181,35 @@ jobs:
       - parallel:
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[0].stop }}
           run: |
+            set -o pipefail
             ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepA \
             --start ${{ matrix.range[0].start }} --end  ${{ matrix.range[0].stop }}  \
             --chains '[${{ matrix.chain }}]' --log-level info | grep -v "Entry missing for blockHeight" | grep -v "discarded" | tee log_${{ matrix.range[0].start }}_${{ matrix.range[0].stop }}.txt
             
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[1].start }} - ${{ matrix.range[1].stop }}
           run: |
-            cd /mnt/btrfs/stepB
-            ls -alh .
+            set -o pipefail
+            ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepA \
+            --start ${{ matrix.range[1].start }} --end  ${{ matrix.range[1].stop }}  \
+            --chains '[${{ matrix.chain }}]' --log-level info | grep -v "Entry missing for blockHeight" | grep -v "discarded" | tee log_${{ matrix.range[1].start }}_${{ matrix.range[1].stop }}.txt
+
       
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[2].start }} - ${{ matrix.range[2].stop }}
           run: |
-            cd /mnt/btrfs/stepC
-            ls -alh .
+            set -o pipefail
+            ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepA \
+            --start ${{ matrix.range[2].start }} --end  ${{ matrix.range[2].stop }}  \
+            --chains '[${{ matrix.chain }}]' --log-level info | grep -v "Entry missing for blockHeight" | grep -v "discarded" | tee log_${{ matrix.range[2].start }}_${{ matrix.range[2].stop }}.txt
 
+      
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[3].start }} - ${{ matrix.range[3].stop }}
           run: |
-            cd /mnt/btrfs/stepD
-            ls -alh .
+            set -o pipefail
+            ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepA \
+            --start ${{ matrix.range[3].start }} --end  ${{ matrix.range[3].stop }}  \
+            --chains '[${{ matrix.chain }}]' --log-level info | grep -v "Entry missing for blockHeight" | grep -v "discarded" | tee log_${{ matrix.range[3].start }}_${{ matrix.range[3].stop }}.txt
+
+      
           
       - name: Compile logs
         run: |
