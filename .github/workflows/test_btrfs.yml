@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast : false
       matrix:
-        chain: ["1","2","3"]
+        chain: ["1","2","3","4"]
         range:
           -
             - start: 6000000
