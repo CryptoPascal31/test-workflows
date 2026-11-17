@@ -138,11 +138,14 @@ jobs:
         run: |
           sudo btrfs subvolume create /mnt/btrfs/main
           sudo chown "$(id -u):$(id -g)" /mnt/btrfs/main
-
           mkdir -p  /mnt/btrfs/main/0
           mkdir -p  /mnt/btrfs/main/0/sqlite
           mkdir -p  /mnt/btrfs/main/0/rocksDb
           chattr -c /mnt/btrfs/main/0/sqlite
+
+          sudp mkdir -p /mnt/btrfs/tmp
+          sudo chown "$(id -u):$(id -g)" /mnt/btrfs/tmp
+          chattr +m /mnt/btrfs/tmp
       
       - parallel:
         - name: Download Pact DB Chain ${{ matrix.chain }}
@@ -159,14 +162,32 @@ jobs:
             
         - name: Download RocksDb for Chain ${{ matrix.chain }}
           run: |
-             cd /mnt/btrfs/main/0/rocksDb
-             i=0
+            set -Eeuo pipefail
 
-             while curl -sSLf "${ROCKS_DB_DOWNLAD_URL}/rocksDb-chain-${{ matrix.chain }}.xz.part-$(printf "%02d" $i)"; do
-              ((i+=1))
-             done | tar -xJf -
-             cd ..
-             sudo compsize rocksDb
+            cd /mnt/btrfs/main/0/rocksDb
+            tmp=$(mktemp /mnt/btrfs/tmp/tmp.XXXXXX)
+            trap 'rm -f "$tmp"' EXIT
+            i=0
+            while true; do
+              part=$(printf "%02d" "$i")
+              url="${ROCKS_DB_DOWNLAD_URL}/rocksDb-chain-${{ matrix.chain }}.xz.part-${part}"
+
+              echo "Downloading part ${part}..."
+              if curl -fSL --retry 5 --retry-all-errors --retry-delay 2 -o "$tmp" "$url"; then
+                cat "$tmp"
+                ((i+=1))
+              else
+                status=$(curl -sSL -o /dev/null -w '%{http_code}' "$url" || true)
+                if [[ "$status" == "404" ]]; then
+                  echo "All $i parts downloaded." >&2
+                  break
+                fi
+
+                echo "Download failed: $url (HTTP $status)" >&2
+                exit 1
+              fi
+            done | xz -dc | tar -xf -
+
 
 # This step would be rmeoved once we have a migrated Sqlite snapshot
       - name: Migrate Database
