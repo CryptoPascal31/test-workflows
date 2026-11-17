@@ -172,7 +172,7 @@ jobs:
       - name: Migrate Database
         run : |
           set -o pipefail
-          ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/stepA \
+          ./chainweb/pact-replay -v mainnet01 --database-directory /mnt/btrfs/main \
           --start 7000000 --end  7000000  \
           --chains '[${{ matrix.chain }}]' --log-level info | grep -v "Entry missing for blockHeight" | grep -v "discarded"
           
