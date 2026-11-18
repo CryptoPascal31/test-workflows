@@ -235,7 +235,7 @@ jobs:
           run: |
             set -o pipefail            
             LOG_FILE=log_$CHAIN_$START_$STOP.txt
-            ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" > $LOG_FILE
+            ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" | tee $LOG_FILE
 
             
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[1].start }} - ${{ matrix.range[1].stop }}
@@ -247,7 +247,7 @@ jobs:
           run: |
             set -o pipefail            
             LOG_FILE=log_$CHAIN_$START_$STOP.txt
-            ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" > $LOG_FILE
+            ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" | tee $LOG_FILE
 
       
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[2].start }} - ${{ matrix.range[2].stop }}
@@ -259,7 +259,7 @@ jobs:
           run: |
             set -o pipefail            
             LOG_FILE=log_$CHAIN_$START_$STOP.txt
-            ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" > $LOG_FILE
+            ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" | tee $LOG_FILE
 
       
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[3].start }} - ${{ matrix.range[3].stop }}
@@ -271,7 +271,7 @@ jobs:
           run: |
             set -o pipefail            
             LOG_FILE=log_$CHAIN_$START_$STOP.txt
-            ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" > $LOG_FILE
+            ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" | tee $LOG_FILE
 
       - name: Compile logs
         if: always()
