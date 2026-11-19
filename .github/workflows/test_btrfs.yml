@@ -1,4 +1,4 @@
-name: Runner Btrfs
+name: Chain replay
 
 on:
   workflow_dispatch:
