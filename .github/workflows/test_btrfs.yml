@@ -8,12 +8,17 @@ on:
          default: evm/fix_fornumbers_spv_lookups
 
       sqliteSnapshot:
-          description: Sqlite snapshot us use
+          description: Sqlite snapshot to use
           default: dbdump-2026-08-09
+
+      rocksDbSnapshot:
+          description: RockdDb snapshot to use
+          default: first_release
+  
       
 env:
   SQLITE_DOWNLOAD_URL: https://github.com/kda-community/pact-db-snapshot/releases/download/${{ github.event.inputs.sqliteSnapshot}}
-  ROCKS_DB_DOWNLAD_URL: https://github.com/${{ github.repository }}/releases/download/first_release
+  ROCKS_DB_DOWNLAD_URL: https://github.com/${{ github.repository }}/releases/download/${{ github.event.inputs.rocksDbSnapshot}}
   
 jobs:
       
@@ -34,75 +39,7 @@ jobs:
             - start: 6750000
               stop:  7100000
               
-          -    
-            - start: 5000000
-              stop:  5250000
-            - start: 5250000
-              stop:  5500000
-            - start: 5500000
-              stop:  5750000
-            - start: 5750000
-              stop:  6000000
 
-          -
-            - start: 4000000
-              stop:  4250000
-            - start: 4250000
-              stop:  4500000
-            - start: 4500000
-              stop:  4750000
-            - start: 4750000
-              stop:  5000000
-
-          -
-            - start: 3500000
-              stop:  3625000
-            - start: 3625000
-              stop:  3750000
-            - start: 3750000
-              stop:  3875000
-            - start: 3875000
-              stop:  4000000
-              
-          -
-            - start: 3000000
-              stop:  3125000
-            - start: 3125000
-              stop:  3250000
-            - start: 3250000
-              stop:  3375000
-            - start: 3375000
-              stop:  3500000
-              
-          -
-            - start: 2000000
-              stop:  2250000
-            - start: 2250000
-              stop:  2500000
-            - start: 2500000
-              stop:  2750000
-            - start: 2750000
-              stop:  3000000
-
-          -
-            - start: 1000000
-              stop:  1250000
-            - start: 1250000
-              stop:  1500000
-            - start: 1500000
-              stop:  1750000
-            - start: 1750000
-              stop:  2000000
-
-          -
-            - start: 0
-              stop:  250000
-            - start: 250000
-              stop:  500000
-            - start: 500000
-              stop:  750000
-            - start: 750000
-              stop:  1000000
               
     name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[3].stop }}
 
@@ -302,14 +239,29 @@ jobs:
     needs: replay
     if: always()
 
+    permissions:
+      contents: write
+      actions: read
+
     steps:
-      - name: Prepare directory
-        run: mkdir -p logs_dir
+      - name: Checkout
+        uses: actions/checkout@v6
     
+      - name: Prepare directory
+        run: mkdir -p logs
+    
+      - name: Get workflow creation date
+        id: date
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          DATE=$(gh run view "$GITHUB_RUN_ID" --json createdAt --jq '.createdAt' | cut -c1-10 | tr -d '-')
+          echo "value=$DATE" >> "$GITHUB_OUTPUT"
+
       - name: Download artifacts
         uses: actions/download-artifact@v8
         with: 
-          path: logs_dir
+          path: logs
           merge-multiple: true
       
       - name: Display structure of downloaded files
@@ -320,7 +272,37 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: replay_logs
-          path: logs_dir
-      
+          path: logs
+
+      - name: Push replay result to repository
+        env:
+          CHAIN_WEB_REF: ${{ github.event.inputs.chainWebRef }}
+          SQLITE_SNAPSHOT: ${{ github.event.inputs.sqliteSnapshot }}
+          ROCKSDB_SNAPSHOT: ${{ github.event.inputs.rocksDbSnapshot }}
+          DATE: ${{ steps.date.outputs.value }}
+        run: |
+          set -Eeuo pipefail
+
+          FILENAME="replay_result_${DATE}_${CHAIN_WEB_REF}.tar.gz"
+          INFOFILE="info_${DATE}_${CHAIN_WEB_REF}.txt"
+
+          mkdir -p result
+
+          tar czf result/$FILENAME logs
+
+          cat > "result/${INFOFILE}" <<EOF
+          date: ${DATE}
+          ref: ${CHAIN_WEB_REF}
+          sqlite_snapshot: ${SQLITE_SNAPSHOT}
+          rocksDb_snapshot: ${ROCKSDB_SNAPSHOT}
+          EOF
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add "result/${FILENAME}" "result/${INFOFILE}"
+
+          git commit -m "Add replay result ${FILENAME}"
+          git push
     
           
