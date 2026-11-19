@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast : false
       matrix:
-        chain: ["1","2","3","4"]
+        chain: ["1","2","3","4","5","6"]
         range:
           -
             - start: 6000000
@@ -53,16 +53,26 @@ jobs:
               stop:  4750000
             - start: 4750000
               stop:  5000000
+
+          -
+            - start: 3500000
+              stop:  3625000
+            - start: 3625000
+              stop:  3750000
+            - start: 3750000
+              stop:  3875000
+            - start: 3875000
+              stop:  4000000
               
           -
             - start: 3000000
+              stop:  3125000
+            - start: 3125000
               stop:  3250000
             - start: 3250000
+              stop:  3375000
+            - start: 3375000
               stop:  3500000
-            - start: 3500000
-              stop:  3750000
-            - start: 3750000
-              stop:  4000000
               
           -
             - start: 2000000
