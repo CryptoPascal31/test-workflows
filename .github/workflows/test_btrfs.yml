@@ -282,9 +282,9 @@ jobs:
           DATE: ${{ steps.date.outputs.value }}
         run: |
           set -Eeuo pipefail
-
-          FILENAME="replay_result_${DATE}_${CHAIN_WEB_REF}.tar.gz"
-          INFOFILE="info_${DATE}_${CHAIN_WEB_REF}.txt"
+          SAFE_REF=$(echo "$CHAIN_WEB_REF" | tr '/' '-')
+          FILENAME="replay_result_${DATE}_${SAFE_REF}.tar.gz"
+          INFOFILE="info_${DATE}_${SAFE_REF}.txt"
 
           mkdir -p result
 
