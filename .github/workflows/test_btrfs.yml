@@ -255,7 +255,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          DATE=$(gh run view "$GITHUB_RUN_ID" --json createdAt --jq '.createdAt' | cut -c1-10 | tr -d '-')
+          DATE=$(gh run view "$GITHUB_RUN_ID" --json createdAt --jq '.createdAt' | date -u -f - +%Y%m%d_%H%M%S)
           echo "value=$DATE" >> "$GITHUB_OUTPUT"
 
       - name: Download artifacts
