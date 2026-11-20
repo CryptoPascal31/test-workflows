@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast : false
       matrix:
-        chain: ["1","2","3","4","5","6","7"]
+        chain: ["1","2","3","4","5","6","7","8"]
         range:
           -
             - start: 6000000
@@ -38,7 +38,75 @@ jobs:
               stop:  6750000
             - start: 6750000
               stop:  7100000
+                        -    
+            - start: 5000000
+              stop:  5250000
+            - start: 5250000
+              stop:  5500000
+            - start: 5500000
+              stop:  5750000
+            - start: 5750000
+              stop:  6000000
+
+          -
+            - start: 4000000
+              stop:  4250000
+            - start: 4250000
+              stop:  4500000
+            - start: 4500000
+              stop:  4750000
+            - start: 4750000
+              stop:  5000000
+
+          -
+            - start: 3500000
+              stop:  3625000
+            - start: 3625000
+              stop:  3750000
+            - start: 3750000
+              stop:  3875000
+            - start: 3875000
+              stop:  4000000
               
+          -
+            - start: 3000000
+              stop:  3125000
+            - start: 3125000
+              stop:  3250000
+            - start: 3250000
+              stop:  3375000
+            - start: 3375000
+              stop:  3500000
+              
+          -
+            - start: 2000000
+              stop:  2250000
+            - start: 2250000
+              stop:  2500000
+            - start: 2500000
+              stop:  2750000
+            - start: 2750000
+              stop:  3000000
+
+          -
+            - start: 1000000
+              stop:  1250000
+            - start: 1250000
+              stop:  1500000
+            - start: 1500000
+              stop:  1750000
+            - start: 1750000
+              stop:  2000000
+
+          -
+            - start: 0
+              stop:  250000
+            - start: 250000
+              stop:  500000
+            - start: 500000
+              stop:  750000
+            - start: 750000
+              stop:  1000000
 
               
     name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[3].stop }}
@@ -286,11 +354,11 @@ jobs:
           FILENAME="replay_result_${DATE}_${SAFE_REF}.tar.gz"
           INFOFILE="info_${DATE}_${SAFE_REF}.txt"
 
-          mkdir -p result
+          mkdir -p results
 
-          tar czf result/$FILENAME logs
+          tar czf results/$FILENAME logs
 
-          cat > "result/${INFOFILE}" <<EOF
+          cat > "results/${INFOFILE}" <<EOF
           date: ${DATE}
           ref: ${CHAIN_WEB_REF}
           sqlite_snapshot: ${SQLITE_SNAPSHOT}
@@ -300,7 +368,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add "result/${FILENAME}" "result/${INFOFILE}"
+          git add "results/${FILENAME}" "results/${INFOFILE}"
 
           git commit -m "Add replay result ${FILENAME}"
           git push
