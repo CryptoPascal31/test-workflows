@@ -38,7 +38,8 @@ jobs:
               stop:  6750000
             - start: 6750000
               stop:  7100000
-                        -    
+              
+          -
             - start: 5000000
               stop:  5250000
             - start: 5250000
