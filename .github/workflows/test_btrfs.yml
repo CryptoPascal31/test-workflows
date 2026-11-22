@@ -315,6 +315,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      
+      - name: Update Repos
+        run: git pull
     
       - name: Prepare directory
         run: mkdir -p logs
