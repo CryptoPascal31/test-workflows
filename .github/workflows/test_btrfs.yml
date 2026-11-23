@@ -243,6 +243,7 @@ jobs:
 
       - parallel:
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[0].stop }}
+          if: ${{ !(matrix.chain >= 10 && matrix.range[0].stop < 852054) }}
           env:
             START: ${{ matrix.range[0].start }}
             STOP: ${{ matrix.range[0].stop }}
@@ -255,6 +256,7 @@ jobs:
 
             
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[1].start }} - ${{ matrix.range[1].stop }}
+          if: ${{ !(matrix.chain >= 10 && matrix.range[1].stop < 852054) }}
           env:
             START: ${{ matrix.range[1].start }}
             STOP: ${{ matrix.range[1].stop }}
@@ -267,6 +269,7 @@ jobs:
 
       
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[2].start }} - ${{ matrix.range[2].stop }}
+          if: ${{ !(matrix.chain >= 10 && matrix.range[2].stop < 852054) }}
           env:
             START: ${{ matrix.range[2].start }}
             STOP: ${{ matrix.range[2].stop }}
@@ -279,8 +282,9 @@ jobs:
 
       
         - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[3].start }} - ${{ matrix.range[3].stop }}
+          if: ${{ !(matrix.chain >= 10 && matrix.range[3].stop < 852054) }}
           env:
-            START: ${{ matrix.range[3].start }}
+            START: ${{ matrix.chain >= 10 && matrix.range[3].start < 852054 && 852054 || matrix.range[3].start }}
             STOP: ${{ matrix.range[3].stop }}
             CHAIN: ${{ matrix.chain }}
             DB_DIR: /mnt/btrfs/stepD               
