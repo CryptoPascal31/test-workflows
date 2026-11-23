@@ -250,7 +250,7 @@ jobs:
             DB_DIR: /mnt/btrfs/stepA
           run: |
             set -o pipefail            
-            LOG_FILE=log_$CHAIN_$START_$STOP.txt
+            LOG_FILE="log_${CHAIN}_${START}_${STOP}.txt"
             ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" | tee $LOG_FILE
 
             
@@ -262,7 +262,7 @@ jobs:
             DB_DIR: /mnt/btrfs/stepB          
           run: |
             set -o pipefail            
-            LOG_FILE=log_$CHAIN_$START_$STOP.txt
+            LOG_FILE="log_${CHAIN}_${START}_${STOP}.txt"
             ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" | tee $LOG_FILE
 
       
@@ -274,7 +274,7 @@ jobs:
             DB_DIR: /mnt/btrfs/stepC          
           run: |
             set -o pipefail            
-            LOG_FILE=log_$CHAIN_$START_$STOP.txt
+            LOG_FILE="log_${CHAIN}_${START}_${STOP}.txt"
             ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" | tee $LOG_FILE
 
       
@@ -286,7 +286,7 @@ jobs:
             DB_DIR: /mnt/btrfs/stepD               
           run: |
             set -o pipefail            
-            LOG_FILE=log_$CHAIN_$START_$STOP.txt
+            LOG_FILE="log_${CHAIN}_${START}_${STOP}.txt"
             ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" | tee $LOG_FILE
 
       - name: Compile logs
