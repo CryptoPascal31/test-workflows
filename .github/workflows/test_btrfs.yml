@@ -29,109 +29,90 @@ jobs:
       matrix:
         chain: ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15", "16","17","18","19"]
         range:
-          -
-            - start: 6000000
-              stop:  6250000
-            - start: 6250000
-              stop:  6500000
-            - start: 6500000
-              stop:  6750000
-            - start: 6750000
-              stop:  7110000
-              
-          -
-            - start: 5500000
-              stop:  5625000
-            - start: 5625000
-              stop:  5750000
-            - start: 5750000
-              stop:  5875000
-            - start: 5875000
-              stop:  6000000
-              
-          -
-            - start: 5000000
-              stop:  5125000
-            - start: 5125000
-              stop:  5250000
-            - start: 5250000
-              stop:  5375000
-            - start: 5375000
-              stop:  5500000
-          -
-            - start: 4500000
-              stop:  4625000
-            - start: 4625000
-              stop:  4750000
-            - start: 4750000
-              stop:  4875000
-            - start: 4875000
-              stop:  5000000
-              
-          -
-            - start: 4000000
-              stop:  4125000
-            - start: 4125000
-              stop:  4250000
-            - start: 4250000
-              stop:  4375000
-            - start: 4375000
-              stop:  4500000
+          - start: 0
+            stop: 999999
+            
+          - start: 1000000
+            stop:  1999999
 
-          -
-            - start: 3500000
-              stop:  3625000
-            - start: 3625000
-              stop:  3750000
-            - start: 3750000
-              stop:  3875000
-            - start: 3875000
-              stop:  4000000
-              
-          -
-            - start: 3000000
-              stop:  3125000
-            - start: 3125000
-              stop:  3250000
-            - start: 3250000
-              stop:  3375000
-            - start: 3375000
-              stop:  3500000
-              
-          -
-            - start: 2000000
-              stop:  2250000
-            - start: 2250000
-              stop:  2500000
-            - start: 2500000
-              stop:  2750000
-            - start: 2750000
-              stop:  3000000
+          - start: 2000000
+            stop:  2999999
 
-          -
-            - start: 1000000
-              stop:  1250000
-            - start: 1250000
-              stop:  1500000
-            - start: 1500000
-              stop:  1750000
-            - start: 1750000
-              stop:  2000000
+          - start: 3000000
+            stop:  3499999 
 
-          -
-            - start: 0
-              stop:  250000
-            - start: 250000
-              stop:  500000
-            - start: 500000
-              stop:  750000
-            - start: 750000
-              stop:  1000000
+          - start: 3500000
+            stop:  3999999 
 
+          - start: 4000000
+            stop:  4499999 
+          
+          - start: 4500000
+            stop:  4999999 
+
+          - start: 5000000
+            stop:  5499999 
+          
+          - start: 5500000
+            stop:  5999999 
+
+          - start: 6000000
+            stop:  6999999 
+
+          - start: 7000000
+            stop:  7999999 
+        
+        exclude:
+          - chain: 19
+            range:
+              start: 3000000
+              stop:  3499999 
+        include:
+            - chain: 19
+              range:
+                start: 3000000
+                stop:  3099999 
+            - chain: 19
+              range:
+                start: 3100000
+                stop:  3199999 
+            - chain: 19
+              range:
+                start: 3200000
+                stop:  3299999 
+            - chain: 19
+              range:
+                start: 3300000
+                stop:  3399999 
+            - chain: 19
+              range:
+                start: 3400000
+                stop:  3499999 
               
-    name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[3].stop }}
+    name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range.start }} - ${{ matrix.range.stop }}
 
     steps:
+
+      - name: Calculate ranges
+        id: ranges
+        env:
+          START: ${{ matrix.range.start }}
+          STOP: ${{ matrix.range.stop }}
+        run: |
+          SIZE=$(( (STOP - START + 1) / 4 ))
+
+          echo "start1=$START" >> $GITHUB_OUTPUT
+          echo "stop1=$((START + SIZE - 1))" >> $GITHUB_OUTPUT
+
+          echo "start2=$((START + SIZE))" >> $GITHUB_OUTPUT
+          echo "stop2=$((START + 2 * SIZE - 1))" >> $GITHUB_OUTPUT
+
+          echo "start3=$((START + 2 * SIZE))" >> $GITHUB_OUTPUT
+          echo "stop3=$((START + 3 * SIZE - 1))" >> $GITHUB_OUTPUT
+
+          echo "start4=$((START + 3 * SIZE))" >> $GITHUB_OUTPUT
+          echo "stop4=$STOP" >> $GITHUB_OUTPUT
+    
       - name: Install Ubuntu Packages
         run: |
           sudo apt-get update
@@ -261,54 +242,58 @@ jobs:
 
 
       - parallel:
-        - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[0].start }} - ${{ matrix.range[0].stop }}
-          if: ${{ !(matrix.chain >= 10 && matrix.range[0].stop < 852054) }}
+        - name: Replay Chain ${{ matrix.chain }} Range 1
+          if: ${{ !(matrix.chain >= 10 && steps.ranges.outputs.stop1 < 852054) }}
           env:
-            START: ${{ matrix.range[0].start }}
-            STOP: ${{ matrix.range[0].stop }}
+            START: ${{ steps.ranges.outputs.start1 }}
+            STOP: ${{ steps.ranges.outputs.stop1 }}
             CHAIN: ${{ matrix.chain }}
             DB_DIR: /mnt/btrfs/stepA
           run: |
-            set -o pipefail            
+            set -o pipefail
+            echo "Replaying range $START - $STOP"
             LOG_FILE="log_${CHAIN}_${START}_${STOP}.txt"
             ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" | tee $LOG_FILE
 
             
-        - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[1].start }} - ${{ matrix.range[1].stop }}
-          if: ${{ !(matrix.chain >= 10 && matrix.range[1].stop < 852054) }}
+        - name: Replay Chain ${{ matrix.chain }} range Range 2
+          if: ${{ !(matrix.chain >= 10 && steps.ranges.outputs.stop2 < 852054) }}
           env:
-            START: ${{ matrix.range[1].start }}
-            STOP: ${{ matrix.range[1].stop }}
+            START: ${{ steps.ranges.outputs.start2 }}
+            STOP: ${{ steps.ranges.outputs.stop2 }}
             CHAIN: ${{ matrix.chain }}
             DB_DIR: /mnt/btrfs/stepB          
           run: |
-            set -o pipefail            
+            set -o pipefail
+            echo "Replaying range $START - $STOP"
             LOG_FILE="log_${CHAIN}_${START}_${STOP}.txt"
             ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" | tee $LOG_FILE
 
       
-        - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[2].start }} - ${{ matrix.range[2].stop }}
-          if: ${{ !(matrix.chain >= 10 && matrix.range[2].stop < 852054) }}
+        - name: Replay Chain ${{ matrix.chain }} Range 3
+          if: ${{ !(matrix.chain >= 10 && steps.ranges.outputs.stop3 < 852054) }}
           env:
-            START: ${{ matrix.range[2].start }}
-            STOP: ${{ matrix.range[2].stop }}
+            START: ${{ steps.ranges.outputs.start3 }}
+            STOP: ${{ steps.ranges.outputs.stop3 }}
             CHAIN: ${{ matrix.chain }}
             DB_DIR: /mnt/btrfs/stepC          
           run: |
-            set -o pipefail            
+            set -o pipefail
+            echo "Replaying range $START - $STOP"
             LOG_FILE="log_${CHAIN}_${START}_${STOP}.txt"
             ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" | tee $LOG_FILE
 
       
-        - name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range[3].start }} - ${{ matrix.range[3].stop }}
-          if: ${{ !(matrix.chain >= 10 && matrix.range[3].stop < 852054) }}
+        - name: Replay Chain ${{ matrix.chain }} Range 4 
+          if: ${{ !(matrix.chain >= 10 && steps.ranges.outputs.stop3 < 852054) }}
           env:
-            START: ${{ matrix.chain >= 10 && matrix.range[3].start < 852054 && 852054 || matrix.range[3].start }}
-            STOP: ${{ matrix.range[3].stop }}
+            START: ${{ matrix.chain >= 10 && steps.ranges.outputs.start4 < 852054 && 852054 || steps.ranges.outputs.start4 }}
+            STOP: ${{ steps.ranges.outputs.stop4 }}
             CHAIN: ${{ matrix.chain }}
             DB_DIR: /mnt/btrfs/stepD               
           run: |
-            set -o pipefail            
+            set -o pipefail
+            echo "Replaying range $START - $STOP"
             LOG_FILE="log_${CHAIN}_${START}_${STOP}.txt"
             ./chainweb/pact-replay -v mainnet01 --database-directory $DB_DIR --start $START --end $STOP --chains "[$CHAIN]" | tee $LOG_FILE
 
