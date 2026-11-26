@@ -285,7 +285,7 @@ jobs:
 
       
         - name: Replay Chain ${{ matrix.chain }} Range 4 
-          if: ${{ !(matrix.chain >= 10 && steps.ranges.outputs.stop3 < 852054) }}
+          if: ${{ !(matrix.chain >= 10 && steps.ranges.outputs.stop4 < 852054) }}
           env:
             START: ${{ matrix.chain >= 10 && steps.ranges.outputs.start4 < 852054 && 852054 || steps.ranges.outputs.start4 }}
             STOP: ${{ steps.ranges.outputs.stop4 }}
