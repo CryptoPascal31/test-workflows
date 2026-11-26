@@ -60,7 +60,7 @@ jobs:
             stop:  6999999 
 
           - start: 7000000
-            stop:  7999999 
+            stop:  7099999 
         
         exclude:
           - chain: 19
