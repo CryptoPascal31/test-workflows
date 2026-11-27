@@ -65,29 +65,62 @@ jobs:
         exclude:
           - chain: 19
             range:
-              start: 3000000
-              stop:  3499999 
+              start: 4000000
+              stop:  4499999 
+          - chain: 19
+            range:
+              start: 4500000
+              stop:  4999999 
+          - chain: 19
+            range:
+              start: 5000000
+              stop:  5499999 
+          - chain: 19
+            range:
+              start: 5500000
+              stop:  5999999 
+              
         include:
             - chain: 19
               range:
-                start: 3000000
-                stop:  3099999 
+                start: 4000000
+                stop:  4199999 
             - chain: 19
               range:
-                start: 3100000
-                stop:  3199999 
+                start: 4200000
+                stop:  4399999 
             - chain: 19
               range:
-                start: 3200000
-                stop:  3299999 
+                start: 4400000
+                stop:  4599999 
             - chain: 19
               range:
-                start: 3300000
-                stop:  3399999 
+                start: 4600000
+                stop:  4799999 
             - chain: 19
               range:
-                start: 3400000
-                stop:  3499999 
+                start: 4800000
+                stop:  4999999 
+            - chain: 19
+              range:
+                start: 5000000
+                stop:  5199999 
+            - chain: 19
+              range:
+                start: 5200000
+                stop:  5399999 
+            - chain: 19
+              range:
+                start: 5400000
+                stop:  5599999 
+            - chain: 19
+              range:
+                start: 5600000
+                stop:  5799999 
+            - chain: 19
+              range:
+                start: 5800000
+                stop:  5999999 
               
     name: Replay Chain ${{ matrix.chain }} range ${{ matrix.range.start }} - ${{ matrix.range.stop }}
 
